@@ -21,6 +21,9 @@ import Button from "components/CustomButtons/Button.js";
 
 import styles from "assets/jss/material-dashboard-react/components/headerLinksStyle.js";
 
+import { useAuth } from "../../contexts/authContext.js";
+import { useHistory } from "react-router-dom";
+
 const useStyles = makeStyles(styles);
 
 export default function AdminNavbarLinks() {
@@ -47,6 +50,21 @@ export default function AdminNavbarLinks() {
   const handleCloseProfile = () => {
     setOpenProfile(null);
   };
+  const { currentUser, logout } = useAuth()
+  const history = useHistory()
+
+  async function handleLogout() {
+
+    try {
+
+      await logout()
+      history.push('/login')
+
+    } catch {
+      alert("failed to logout")
+    }
+  }
+
   return (
     <div>
       <div className={classes.searchWrapper}>
@@ -78,6 +96,7 @@ export default function AdminNavbarLinks() {
         </Hidden>
       </Button>
       <div className={classes.manager}>
+      {currentUser.email}
         <Button
           color={window.innerWidth > 959 ? "transparent" : "white"}
           justIcon={window.innerWidth > 959}
@@ -86,7 +105,9 @@ export default function AdminNavbarLinks() {
           aria-haspopup="true"
           onClick={handleClickProfile}
           className={classes.buttonLink}
+          
         >
+        
           <Person className={classes.icons} />
           <Hidden mdUp implementation="css">
             <p className={classes.linkText}>Profile</p>
@@ -119,17 +140,11 @@ export default function AdminNavbarLinks() {
                       onClick={handleCloseProfile}
                       className={classes.dropdownItem}
                     >
-                      Profile
-                    </MenuItem>
-                    <MenuItem
-                      onClick={handleCloseProfile}
-                      className={classes.dropdownItem}
-                    >
-                      Settings
+                      Update Profile
                     </MenuItem>
                     <Divider light />
                     <MenuItem
-                      onClick={handleCloseProfile}
+                      onClick={handleLogout}
                       className={classes.dropdownItem}
                     >
                       Logout

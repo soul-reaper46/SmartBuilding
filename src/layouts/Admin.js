@@ -47,7 +47,7 @@ export default function Admin({ ...rest }) {
   const mainPanel = React.createRef();
   // states and functions
   const [image, setImage] = React.useState(bgImage);
-  const [color, setColor] = React.useState("blue");
+  const [color, setColor] = React.useState("purple");
   const [fixedClasses, setFixedClasses] = React.useState("dropdown show");
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const handleImageClick = (image) => {
@@ -93,7 +93,7 @@ export default function Admin({ ...rest }) {
     };
   }, [mainPanel]);
   return (
-    <div className={classes.wrapper}>
+    <div className={classes.wrapper} style={{backgroundColor:'#EEEEEE'}}>
       <Sidebar
         routes={routes}
         logoText={"Creative Tim"}

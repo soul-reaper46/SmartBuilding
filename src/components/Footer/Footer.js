@@ -42,7 +42,7 @@ export default function Footer(props) {
         <p className={classes.right}>
           <span>
             &copy; {1900 + new Date().getYear()}{" "}
-            ,Final year project by Team1, 17 Series batch, IS&E Dept, BIET
+            ,Final year project by Team-1, 17 Series batch, IS&E Dept, BIET
           </span>
         </p>
       </div>

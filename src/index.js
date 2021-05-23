@@ -1,6 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
+import App from './views/App';
 
 // core components
 import Admin from "layouts/Admin.js";
@@ -8,11 +9,12 @@ import Admin from "layouts/Admin.js";
 import "assets/css/material-dashboard-react.css?v=1.10.0";
 
 ReactDOM.render(
-  <BrowserRouter>
-    <Switch>
-      <Route path="/admin" component={Admin} />
-      <Redirect from="/" to="/admin/dashboard" />
-    </Switch>
-  </BrowserRouter>,
+  // <BrowserRouter>
+  //   <Switch>
+  //     <Route path="/admin" component={Admin} />
+  //     <Redirect from="/" to="/admin/dashboard" />
+  //   </Switch>
+  // </BrowserRouter>
+  <App />,
   document.getElementById("root")
 );

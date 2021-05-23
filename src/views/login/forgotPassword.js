@@ -1,10 +1,11 @@
-import React, { useState} from 'react';
+import React, { useState } from 'react';
 import { Button, Grid, InputAdornment, TextField } from "@material-ui/core";
 import { AccountCircle } from "@material-ui/icons";
 import { useAuth } from "../../contexts/authContext";
 import { useHistory } from "react-router-dom";
-
-
+import AddAlert from "@material-ui/icons/AddAlert";
+import SnackbarContent from "components/Snackbar/SnackbarContent.js";
+import Snackbar from "components/Snackbar/Snackbar.js";
 
 function ForgotPassword() {
 
@@ -24,29 +25,28 @@ function ForgotPassword() {
 
         setValues({ ...values, falseUser: false });
         setValues({ ...values, errorMessage: null });
-        
+
         try {
 
             setLoading(true)
             await resetPassword(values.username)
-            alert('Check your inbox for further instructions')
             setValues({ ...values, beforeReset: false });
-            
+
         } catch (error) {
             setValues({ ...values, errorMessage: error.message });
-            setValues({ ...values, falseUser: true });   
-        }
-
-        if (values.errorMessage == "INVALID_EMAIL"){
             setValues({ ...values, falseUser: true });
         }
-        setLoading(false)    
+
+        if (values.errorMessage == "INVALID_EMAIL") {
+            setValues({ ...values, falseUser: true });
+        }
+        setLoading(false)
     }
-    
+
 
     const handleChange = (prop) => (event) => {
         setValues({ ...values, [prop]: event.target.value });   /*this function handles values when user types in textfield*/
-        
+
     };
 
     const backToLogin = () => {
@@ -70,43 +70,51 @@ function ForgotPassword() {
                             <Grid container justify='center'>
                                 <img
                                     src='https://i.imgur.com/Aj5J83Y.png'                       /*code for logo*/
-                                    width={200}
+                                    width={150}
                                     alt='logo'
                                 />
-                                
+
                             </Grid>
                             <Grid container justify='center'>
-                                <h2 style={{marginTop:0, color:'#3F51B5'}}>Password Reset</h2>
+                                <h2 style={{ fontSize: '35px', fontWeight: '500', marginTop: 0, color: '#9c27b0' }}>Password Reset</h2>
                             </Grid>
 
-                            {values.beforeReset ? 
-                            <TextField required
-                                id='username'
-                                label="Username"
-                                type='email'
-                                variant="outlined"                                               /*code for username field*/
-                                value={values.username}
-                                onChange={handleChange('username')}
-                                error={values.username === "" || values.falseUser}
-                                helperText={values.falseUser ? 'Incorrect Username' : null}
-                                style={{ margin: 10 }}
-                                InputProps={{
-                                    startAdornment: <InputAdornment position="start"><AccountCircle style={{ color: '#3F51B5' }} /></InputAdornment>,
+                            {values.beforeReset ?
+                                <TextField required
+                                    id='username'
+                                    label="Username"
+                                    type='email'
+                                    variant="outlined"                                              /*code for username field*/
+                                    value={values.username}
+                                    onChange={handleChange('username')}
+                                    error={values.username === "" || values.falseUser}
+                                    helperText={values.falseUser ? 'Incorrect Username' : null}
+                                    style={{ margin: 10 }}
+                                    InputProps={{
+                                        startAdornment: <InputAdornment position="start"><AccountCircle style={{ color: '#9c27b0' }} /></InputAdornment>,
 
-                                }}
-                            />
-                            : null}
-                            {values.beforeReset ? 
-                            <Button type='submit' onClick={handleSubmit} color='primary' variant='contained' style={{ margin: 10 }}>
-                                Reset Password                                                               {/* code for buttons  */}
-                            </Button>
-                            : null}
+                                    }}
+                                />
+                                : null}
+                            {values.beforeReset ?
+                                <Button type='submit' onClick={handleSubmit} color='primary' variant='contained' style={{ margin: 10, backgroundColor: '#9c27b0' }}>
+                                    Reset Password                                                               {/* code for buttons  */}
+                                </Button>
+                                : null}
+                            {values.beforeReset ? null : 
+                            <SnackbarContent
+                                message={
+                                    "Check your inbox for further instructions"
+                                }
+                                close
+                                color="primary"
+                            />}
                             <Button style={{ margin: 10 }} onClick={backToLogin}>
                                 Back To Login
                             </Button>
-                            
+
                         </div>
-                        </form>
+                    </form>
                     <div />
                 </Grid>
             </Grid>

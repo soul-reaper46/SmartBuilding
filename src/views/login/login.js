@@ -35,22 +35,23 @@ function Login() {
 
             setLoading(true)
             await login(values.username, values.password)
-            history.push('/') 
+            history.push('/admin/dashboard') 
             
         } catch (error) {
-            setValues({ ...values, errorMessage: error.message });   
-        }
-
-        if (values.errorMessage == 'EMAIL_NOT_FOUND'){
-            setValues({ ...values, falseUser: true });
-        } else if (values.errorMessage == 'There is no user record corresponding to this identifier. The user may have been deleted.'){
-            setValues({ ...values, falseUser: true });
-        } else if (values.errorMessage == 'The password is invalid or the user does not have a password.'){
-            setValues({ ...values, falsePass: true });
-        } else if (values.errorMessage == 'INVALID_PASSWORD'){
-            setValues({ ...values, falsePass: true });
-        }
-        
+            //setValues({ ...values, errorMessage: error.message });
+            if (error.message == 'EMAIL_NOT_FOUND'){
+                setValues({ ...values, falseUser: true, falsePass: false });
+            } 
+            if (error.message == 'There is no user record corresponding to this identifier. The user may have been deleted.'){
+                setValues({ ...values, falseUser: true, falsePass: false });
+            } 
+            if (error.message == 'The password is invalid or the user does not have a password.'){
+                setValues({ ...values, falsePass: true, falseUser: false });
+            } 
+            if (error.message == 'INVALID_PASSWORD'){
+                setValues({ ...values, falsePass: true, falseUser: false });
+            }   
+        }      
         setLoading(false)    
     }
     
@@ -96,12 +97,12 @@ function Login() {
                             <Grid container justify='center'>
                                 <img
                                     src='https://i.imgur.com/Aj5J83Y.png'                       /*code for logo*/
-                                    width={200}
+                                    width={150}
                                     alt='logo'
                                 />
                             </Grid>
                             <Grid container justify='center'>
-                                <h2 style={{marginTop:0, color:'#3F51B5'}}>Log In</h2>
+                                <h2 style={{fontWeight: '500',marginTop:0, color:'#9c27b0'}}>Log In</h2>
                             </Grid>
                             
                             <TextField required
@@ -115,7 +116,7 @@ function Login() {
                                 helperText={values.falseUser ? 'Incorrect Username' : null}
                                 style={{ margin: 10 }}
                                 InputProps={{
-                                    startAdornment: <InputAdornment position="start"><AccountCircle style={{ color: '#3F51B5' }} /></InputAdornment>,
+                                    startAdornment: <InputAdornment position="start"><AccountCircle style={{ color: '#9c27b0' }} /></InputAdornment>,
 
                                 }}
                             />
@@ -130,7 +131,7 @@ function Login() {
                                 helperText={values.falsePass ? 'Incorrect Password' : null}
                                 style={{ margin: 10 }}
                                 InputProps={{
-                                    startAdornment: <InputAdornment position="start"><LockRounded style={{ color: '#3F51B5' }} /></InputAdornment>,
+                                    startAdornment: <InputAdornment position="start"><LockRounded style={{ color: '#9c27b0' }} /></InputAdornment>,
                                     endAdornment:
                                         <InputAdornment position="end">
                                             <IconButton
@@ -144,7 +145,7 @@ function Login() {
                                 }}
                             />
                             
-                            <Button type='submit' onClick={handleSubmit} color='primary' variant='contained' style={{ margin: 10 }}>
+                            <Button type='submit' onClick={handleSubmit} color='primary' variant='contained' style={{ margin: 10, backgroundColor:'#9c27b0' }}>
                                 Log in                                                               {/* code for buttons  */}
                             </Button>
                             <Button style={{ margin: 10 }} onClick={forgotPass}>
