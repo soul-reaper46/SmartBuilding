@@ -5,17 +5,13 @@ import ChartistGraph from "react-chartist";
 import { makeStyles } from "@material-ui/core/styles";
 import Icon from "@material-ui/core/Icon";
 // @material-ui/icons
-import Store from "@material-ui/icons/Store";
-import Warning from "@material-ui/icons/Warning";
-import DateRange from "@material-ui/icons/DateRange";
-import LocalOffer from "@material-ui/icons/LocalOffer";
-import Update from "@material-ui/icons/Update";
-import ArrowUpward from "@material-ui/icons/ArrowUpward";
 import AccessTime from "@material-ui/icons/AccessTime";
-import Accessibility from "@material-ui/icons/Accessibility";
 import BugReport from "@material-ui/icons/BugReport";
 import Code from "@material-ui/icons/Code";
 import Cloud from "@material-ui/icons/Cloud";
+import WbIncandescentOutlinedIcon from '@material-ui/icons/WbIncandescentOutlined';
+import ToysOutlinedIcon from '@material-ui/icons/ToysOutlined';
+import ReceiptOutlinedIcon from '@material-ui/icons/ReceiptOutlined';
 // core components
 import GridItem from "components/Grid/GridItem.js";
 import GridContainer from "components/Grid/GridContainer.js";
@@ -50,20 +46,17 @@ export default function Dashboard() {
           <Card>
             <CardHeader color="warning" stats icon>
               <CardIcon color="warning">
-                <Icon>content_copy</Icon>
+                <Icon>power</Icon>
               </CardIcon>
-              <p className={classes.cardCategory}>Used Space</p>
+              <p className={classes.cardCategory}>Power Consumed</p>
               <h3 className={classes.cardTitle}>
-                49/50 <small>GB</small>
+                50 <small>W</small>
               </h3>
             </CardHeader>
             <CardFooter stats>
               <div className={classes.stats}>
-                <Danger>
-                  <Warning />
-                </Danger>
                 <a href="#pablo" onClick={(e) => e.preventDefault()}>
-                  Get more space
+                  View Consumption Over Time
                 </a>
               </div>
             </CardFooter>
@@ -73,15 +66,14 @@ export default function Dashboard() {
           <Card>
             <CardHeader color="success" stats icon>
               <CardIcon color="success">
-                <Store />
+                <WbIncandescentOutlinedIcon/>
               </CardIcon>
-              <p className={classes.cardCategory}>Revenue</p>
-              <h3 className={classes.cardTitle}>$34,245</h3>
+              <p className={classes.cardCategory}>Lights On</p>
+              <h3 className={classes.cardTitle}>2</h3>
             </CardHeader>
             <CardFooter stats>
               <div className={classes.stats}>
-                <DateRange />
-                Last 24 Hours
+                Out of 4
               </div>
             </CardFooter>
           </Card>
@@ -90,15 +82,14 @@ export default function Dashboard() {
           <Card>
             <CardHeader color="danger" stats icon>
               <CardIcon color="danger">
-                <Icon>info_outline</Icon>
+                <ToysOutlinedIcon />
               </CardIcon>
-              <p className={classes.cardCategory}>Fixed Issues</p>
-              <h3 className={classes.cardTitle}>75</h3>
+              <p className={classes.cardCategory}>Fans On</p>
+              <h3 className={classes.cardTitle}>1</h3>
             </CardHeader>
             <CardFooter stats>
               <div className={classes.stats}>
-                <LocalOffer />
-                Tracked from Github
+                Out of 2
               </div>
             </CardFooter>
           </Card>
@@ -107,15 +98,14 @@ export default function Dashboard() {
           <Card>
             <CardHeader color="info" stats icon>
               <CardIcon color="info">
-                <Accessibility />
+                <ReceiptOutlinedIcon />
               </CardIcon>
-              <p className={classes.cardCategory}>Followers</p>
-              <h3 className={classes.cardTitle}>+245</h3>
+              <p className={classes.cardCategory}>Curtains Open</p>
+              <h3 className={classes.cardTitle}>3</h3>
             </CardHeader>
             <CardFooter stats>
               <div className={classes.stats}>
-                <Update />
-                Just Updated
+                Out of 5
               </div>
             </CardFooter>
           </Card>
@@ -134,12 +124,9 @@ export default function Dashboard() {
               />
             </CardHeader>
             <CardBody>
-              <h4 className={classes.cardTitle}>Daily Sales</h4>
+              <h4 className={classes.cardTitle}>Total Power</h4>
               <p className={classes.cardCategory}>
-                <span className={classes.successText}>
-                  <ArrowUpward className={classes.upArrowCardCategory} /> 55%
-                </span>{" "}
-                increase in today sales.
+                Consumption over the week.
               </p>
             </CardBody>
             <CardFooter chart>
@@ -162,12 +149,12 @@ export default function Dashboard() {
               />
             </CardHeader>
             <CardBody>
-              <h4 className={classes.cardTitle}>Email Subscriptions</h4>
-              <p className={classes.cardCategory}>Last Campaign Performance</p>
+              <h4 className={classes.cardTitle}>Total Light</h4>
+              <p className={classes.cardCategory}>Usage over the week.</p>
             </CardBody>
             <CardFooter chart>
               <div className={classes.stats}>
-                <AccessTime /> campaign sent 2 days ago
+                <AccessTime /> updated 2 minutes ago
               </div>
             </CardFooter>
           </Card>
@@ -184,12 +171,12 @@ export default function Dashboard() {
               />
             </CardHeader>
             <CardBody>
-              <h4 className={classes.cardTitle}>Completed Tasks</h4>
-              <p className={classes.cardCategory}>Last Campaign Performance</p>
+              <h4 className={classes.cardTitle}>Total Fan</h4>
+              <p className={classes.cardCategory}>Usage over the week.</p>
             </CardBody>
             <CardFooter chart>
               <div className={classes.stats}>
-                <AccessTime /> campaign sent 2 days ago
+                <AccessTime /> updated 3 minutes ago
               </div>
             </CardFooter>
           </Card>

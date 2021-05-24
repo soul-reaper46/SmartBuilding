@@ -3,9 +3,7 @@ import { Button, Grid, InputAdornment, TextField } from "@material-ui/core";
 import { AccountCircle } from "@material-ui/icons";
 import { useAuth } from "../../contexts/authContext";
 import { useHistory } from "react-router-dom";
-import AddAlert from "@material-ui/icons/AddAlert";
 import SnackbarContent from "components/Snackbar/SnackbarContent.js";
-import Snackbar from "components/Snackbar/Snackbar.js";
 
 function ForgotPassword() {
 

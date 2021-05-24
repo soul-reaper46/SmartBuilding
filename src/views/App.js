@@ -9,6 +9,7 @@ import {PrivateRoute, PrivateRedirect} from "./routes/PrivateRoute.js"
 import Admin from "../layouts/Admin.js";
 
 import "assets/css/material-dashboard-react.css?v=1.10.0";
+import UpdateProfile from './login/UpdateProfile.js';
 
 function App() {
   return (
