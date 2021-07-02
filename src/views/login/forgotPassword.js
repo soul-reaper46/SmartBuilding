@@ -80,7 +80,7 @@ function ForgotPassword() {
                             {values.beforeReset ?
                                 <TextField required
                                     id='username'
-                                    label="Username"
+                                    label="Email"
                                     type='email'
                                     variant="outlined"                                              /*code for username field*/
                                     value={values.username}

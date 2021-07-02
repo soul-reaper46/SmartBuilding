@@ -5,9 +5,13 @@ import { AccountCircle, LockRounded } from "@material-ui/icons";
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import IconButton from '@material-ui/core/IconButton';
-import { useAuth, AuthProvider } from "../../contexts/authContext";
-import { Link, useHistory } from "react-router-dom";
-import SnackbarContent from "components/Snackbar/SnackbarContent.js";
+import { useAuth } from "../../contexts/authContext";
+import { useHistory } from "react-router-dom";
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
 
 export default function UpdateProfile() {
 
@@ -46,13 +50,9 @@ export default function UpdateProfile() {
       }
       if (values.password) {
         await updatePassword(values.password)
-        setAlert()
-        //alert("Password Updated, Please Login with new Password")
-        await logout()
-        history.push('/login')
+        setValues({ ...values, showAlert: true}) 
       }
     } catch (error) {
-      //alert(error.message)
       if (error.message === "This operation is sensitive and requires recent authentication. Log in again before retrying this request.") {
         alert("CREDENTIAL TOO OLD, LOGIN AGAIN")
       }
@@ -81,8 +81,10 @@ export default function UpdateProfile() {
     history.push("/admin/dashboard")
   };
 
-  const setAlert = () => {
-    setValues({ ...values, showAlert: true})
+  async function handleClose() {
+    setValues({ ...values, showAlert: false})
+    await logout()
+    history.push('/login')
   };
 
   return (
@@ -106,7 +108,7 @@ export default function UpdateProfile() {
                             {!values.showAlert ? 
                             <TextField required
                                 id='username'
-                                label="Username"
+                                label="Email"
                                 type='email'
                                 variant="outlined"                                               /*code for username field*/
                                 value={values.username}
@@ -179,17 +181,27 @@ export default function UpdateProfile() {
                             <Button style={{ margin: 10 }} onClick={cancel}>
                                 Cancel
                             </Button>
-                           : null }
-                           {values.showAlert ?  
-                            <SnackbarContent
-                                message={
-                                    "Password updated, Please login again."
-                                }
-                                color="primary"
-                            />
-                           : null }
+                           : null }  
+                            <Dialog
+                              open={values.showAlert}
+                              onClose={handleClose}
+                              aria-labelledby="alert-dialog-title"
+                              aria-describedby="alert-dialog-description"
+                            >
+                              <DialogTitle id="alert-dialog-title">{"Password Successfully Updated!"}</DialogTitle>
+                              <DialogContent>
+                                <DialogContentText id="alert-dialog-description">
+                                  Please Login again. You will be redirected to login Page now.
+                                </DialogContentText>
+                              </DialogContent>
+                              <DialogActions>
+                                <Button onClick={handleClose} color="primary" variant='contained' style={{ margin: 10, backgroundColor:'#9c27b0' }}>
+                                  Ok
+                                </Button>
+                              </DialogActions>
+                          </Dialog>
                         </div>
-                        </form>
+                      </form>
                     <div />
                 </Grid>
             </Grid>

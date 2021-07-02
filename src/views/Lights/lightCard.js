@@ -1,16 +1,17 @@
-import React from "react";
+import React, { useState } from "react";
+import firebase from "firebase";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
+import { Button } from "@material-ui/core";
+import Switch from '@material-ui/core/Switch';
 // core components
 import GridItem from "components/Grid/GridItem.js";
 import GridContainer from "components/Grid/GridContainer.js";
 import Card from "components/Card/Card.js";
 import CardHeader from "components/Card/CardHeader.js";
 import CardBody from "components/Card/CardBody.js";
-import CurtainCard from "./CurtainCard"
-import { Button } from "@material-ui/core";
+import EditLight from './editLight';
 import Customdrawer from 'components/CustomDrawer/Customdrawer';
-import AddCurtain from './addCurtain';
 
 const styles = {
   cardCategoryWhite: {
@@ -44,12 +45,13 @@ const styles = {
 
 const useStyles = makeStyles(styles);
 
-export default function WindowCurtains() {
-  const classes = useStyles();
+export default function LightCard(props) {
 
-  const CurtainList = ["1", "2", "3"]
+   const [values, setValues] = React.useState({
+     On: false
+   });
 
-  const [state, setState] = React.useState({
+   const [state, setState] = React.useState({
     openDrawer: false,
   })
 
@@ -67,19 +69,44 @@ export default function WindowCurtains() {
     }
     setState({ ...state, openDrawer: open })
   };
+  
+  const classes = useStyles();
+
+  const [checked, setChecked] = React.useState(false);
+
+   function pushData(id) {
+      if (!values.On){
+        firebase.database().ref('Lights/Light' + id).set({
+          power: 0,
+        });
+     } else if (values.On) {
+      firebase.database().ref('Lights/Light' + id).set({
+        power: 1,
+      });
+     } 
+   }
+
+  function toggleChecked(id) {
+    setChecked((prev) => !prev);
+    setValues({ ...values, On: !values.On });  
+  };
 
   return (
-    <GridContainer>
-      <GridItem xs={12} sm={12} md={12}>
-        <Card>
-          <CardBody>
-            <GridContainer xs={12} sm={12} md={12} justify="flex-end">
-              <Button color="primary" variant='contained' style={{ margin: 10, backgroundColor:'#6e7c7c' }}  onClick={showDrawer}>Add Curtain</Button>
-            </GridContainer>
-            <GridContainer>
-              {CurtainList.map(num => <CurtainCard id={num} />)}
-            </GridContainer>
-            <Customdrawer toggleDrawer={toggleDrawer} openDrawer={state.openDrawer}>
+    <GridItem xs={12} sm={4} md={4}>
+      <Card>
+        <CardHeader color="primary">
+          <h5 className={classes.cardTitleWhite}>Light{props.id}</h5>
+        </CardHeader>
+        <CardBody>
+          <GridItem>
+            <p style={{ fontWeight:'500' }}>Power : <Switch checked={checked} onChange={toggleChecked} onClick={pushData(props.id)}/></p>
+          </GridItem>
+
+          <GridContainer xs={12} sm={12} md={12} justify="flex-end">
+            <Button color="primary" variant='contained' style={{ margin: 10, backgroundColor: '#87a7b3' }} onClick={showDrawer}>Edit</Button>
+            <Button color="primary" variant='contained' style={{ margin: 10, backgroundColor: '#ce1212' }}>Remove</Button>
+          </GridContainer>
+          <Customdrawer toggleDrawer={toggleDrawer} openDrawer={state.openDrawer}>
               <div style={{direction:'column', justify:'space-between'}}>
                 <div style={{display: 'flex', justifyContent:'flex-end'  , alignItems:'flex-end', marginTop:'10px', marginRight:'10px'}}>
                   <Button
@@ -92,13 +119,12 @@ export default function WindowCurtains() {
                   </Button>
                 </div>
                 <div style={{ marginTop:'80px', marginRight:'10px'}}>
-                <AddCurtain />
+                <EditLight />
                 </div>
               </div>
             </Customdrawer>
-          </CardBody>
-        </Card>
-      </GridItem>
-    </GridContainer>
+        </CardBody>
+      </Card>
+    </GridItem>
   );
 }

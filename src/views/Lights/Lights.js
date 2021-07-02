@@ -7,6 +7,10 @@ import GridContainer from "components/Grid/GridContainer.js";
 import Card from "components/Card/Card.js";
 import CardHeader from "components/Card/CardHeader.js";
 import CardBody from "components/Card/CardBody.js";
+import LightCard from "./lightCard.js"
+import { Button } from "@material-ui/core";
+import Customdrawer from 'components/CustomDrawer/Customdrawer';
+import AddLight from './addLight';
 
 const styles = {
   cardCategoryWhite: {
@@ -19,6 +23,11 @@ const styles = {
     },
     "& a,& a:hover,& a:focus": {
       color: "#FFFFFF",
+    },
+  },
+  root: {
+    '& .MuiDrawer-paperAnchorRight': {
+      width: '40%',
     },
   },
   cardTitleWhite: {
@@ -42,15 +51,56 @@ const useStyles = makeStyles(styles);
 
 export default function Lights() {
   const classes = useStyles();
+
+  const lightList = ["1", "2", "3", "4"]
+
+  const [state, setState] = React.useState({
+    openDrawer: false,
+  })
+
+  function showDrawer() {
+    setState({ ...state, openDrawer: true })
+    return toggleDrawer
+  }
+
+  function toggleDrawer(open, event) {
+    if (event && event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
+      return;
+    }
+    if (open === false) {
+      setState({ ...state, openDrawer: false })
+    }
+    setState({ ...state, openDrawer: open })
+  };
+
   return (
     <GridContainer>
       <GridItem xs={12} sm={12} md={12}>
         <Card>
-          <CardHeader color="primary">
-            <h4 className={classes.cardTitleWhite}>Lights</h4>
-          </CardHeader>
           <CardBody>
-            Light Cards will appear here
+            <GridContainer xs={12} sm={12} md={12} justify="flex-end">
+              <Button color="primary" variant='contained' style={{ margin: 10, backgroundColor: '#6e7c7c' }} onClick={showDrawer}>Add Light</Button>
+            </GridContainer>
+            <GridContainer>
+              {lightList.map(num => <LightCard id={num} />)}
+            </GridContainer>
+            <Customdrawer toggleDrawer={toggleDrawer} openDrawer={state.openDrawer}>
+              <div style={{direction:'column', justify:'space-between'}}>
+                <div style={{display: 'flex', justifyContent:'flex-end'  , alignItems:'flex-end', marginTop:'10px', marginRight:'10px'}}>
+                  <Button
+                    color="primary" 
+                    variant='contained'
+                    style={{ backgroundColor:'#9c27b0' }}
+                    onClick={(e) => toggleDrawer(false, e)}
+                  >
+                    Close
+                  </Button>
+                </div>
+                <div style={{ marginTop:'80px', marginRight:'10px'}}>
+                <AddLight />
+                </div>
+              </div>
+            </Customdrawer>
           </CardBody>
         </Card>
       </GridItem>
