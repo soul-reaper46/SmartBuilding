@@ -4,10 +4,9 @@ import { AccountCircle, LockRounded } from "@material-ui/icons";
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import IconButton from '@material-ui/core/IconButton';
-import { useAuth, AuthProvider } from "../../contexts/authContext";
-import { Link, useHistory } from "react-router-dom";
-
-
+import { useAuth } from "../../contexts/authContext";
+import { useHistory } from "react-router-dom";
+import Hidden from '@material-ui/core/Hidden';
 
 function Login() {
 
@@ -77,13 +76,15 @@ function Login() {
     return (
         <div>
             <Grid container style={{ minHeight: '100vh' }}>
-                <Grid item xs={12} sm={6} md={6}>
+            <Hidden xsDown>
+                <Grid item xs={12} sm={6} md={6} >
                     <img
                         src='https://i.imgur.com/kOX5znE.jpg?2'                         /*code for left image*/
                         style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                         alt='brand'
                     />
                 </Grid>
+            </Hidden>
                 <Grid
                     container item xs={12} sm={6} md={6}
                     alignItems='center'
