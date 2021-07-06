@@ -57,22 +57,6 @@ const dashboardRoutes = [
   //   component: UserProfile,
   //   layout: "/admin",
   // },
-  
-  // {
-  //   path: "/typography",
-  //   name: "Typography",
-  //   icon: LibraryBooks,
-  //   component: Typography,
-  //   layout: "/admin",
-  // },
-  
-  // {
-  //   path: "/notifications",
-  //   name: "Notifications",
-  //   icon: Notifications,
-  //   component: NotificationsPage,
-  //   layout: "/admin",
-  // },
 ];
 
 export default dashboardRoutes;

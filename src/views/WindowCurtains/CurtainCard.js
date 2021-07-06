@@ -1,4 +1,4 @@
-import React,{useState} from "react";
+import React,{useState, useEffect} from "react";
 import firebase from "firebase";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
@@ -50,7 +50,8 @@ export default function CurtainCard(props) {
   const classes = useStyles();
 
   const [values, setValues] = React.useState({
-    On: false
+    On: false,
+    switch: false
   });
 
   const [checked, setChecked] = React.useState(false);
@@ -75,18 +76,36 @@ export default function CurtainCard(props) {
   };
 
   function pushData(id) {
-    if (!values.On){
-      firebase.database().ref('Curtains/Curtain' + id).set({
+    if (!checked){
+      firebase.database().ref('Devices/Curtains/' + id).set({
         power: 0,
       });
-   } else if (values.On) {
-    firebase.database().ref('Curtains/Curtain' + id).set({
+   } else if (checked) {
+    firebase.database().ref('Devices/Curtains/' + id).set({
       power: 1,
     });
    } 
  }
 
-  function toggleChecked(id) {
+ useEffect(()=> {
+  const devicesRef = firebase.database().ref('Devices/Curtains/' + props.id);
+  firebase.database().ref('Devices/Curtains/' + props.id).set({power: props.value}) //this line ensures db data  does not get overwritten when on page refresh.
+  devicesRef.on('value', (snapshot) => {
+    switchval(Object.entries(snapshot.val()))
+  })
+ }, []);
+
+function switchval(data){
+  console.log(data[0][1]);
+   if (data[0][1] == 1){
+    setChecked(true);
+   } else if (data[0][1] == 0){
+    setChecked(false);
+   }
+  
+}
+
+  function toggleChecked() {
     setChecked((prev) => !prev);
     setValues({ ...values, On: !values.On });  
   };
@@ -95,7 +114,7 @@ export default function CurtainCard(props) {
       <GridItem xs={12} sm={4} md={4}>
         <Card>
           <CardHeader color="primary">
-            <h5 className={classes.cardTitleWhite}>Curtain</h5>
+            <h5 className={classes.cardTitleWhite}>{props.id}</h5>
           </CardHeader>
           <CardBody>
           <GridItem>

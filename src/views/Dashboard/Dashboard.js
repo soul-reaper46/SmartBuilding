@@ -1,4 +1,5 @@
-import React from "react";
+import React, {useEffect} from "react";
+import firebase from "firebase";
 // react plugin for creating charts
 import ChartistGraph from "react-chartist";
 // @material-ui/core
@@ -6,26 +7,17 @@ import { makeStyles } from "@material-ui/core/styles";
 import Icon from "@material-ui/core/Icon";
 // @material-ui/icons
 import AccessTime from "@material-ui/icons/AccessTime";
-import BugReport from "@material-ui/icons/BugReport";
-import Code from "@material-ui/icons/Code";
-import Cloud from "@material-ui/icons/Cloud";
 import WbIncandescentOutlinedIcon from '@material-ui/icons/WbIncandescentOutlined';
 import ToysOutlinedIcon from '@material-ui/icons/ToysOutlined';
 import ReceiptOutlinedIcon from '@material-ui/icons/ReceiptOutlined';
 // core components
 import GridItem from "components/Grid/GridItem.js";
 import GridContainer from "components/Grid/GridContainer.js";
-import Table from "components/Table/Table.js";
-import Tasks from "components/Tasks/Tasks.js";
-import CustomTabs from "components/CustomTabs/CustomTabs.js";
-import Danger from "components/Typography/Danger.js";
 import Card from "components/Card/Card.js";
 import CardHeader from "components/Card/CardHeader.js";
 import CardIcon from "components/Card/CardIcon.js";
 import CardBody from "components/Card/CardBody.js";
 import CardFooter from "components/Card/CardFooter.js";
-
-import { bugs, website, server } from "variables/general.js";
 
 import {
   dailySalesChart,
@@ -39,6 +31,50 @@ const useStyles = makeStyles(styles);
 
 export default function Dashboard() {
   const classes = useStyles();
+
+  const [values, setValues] = React.useState({
+    devices: null,
+    lightsOn: null,
+    totalLights: null,
+    fansOn: null,
+    totalFans: null,
+    curtainsOn: null,
+    totalCurtains: null
+  });
+
+   useEffect(()=> {
+    const devicesRef = firebase.database().ref('Devices');
+    devicesRef.on('value', (snapshot) => {
+      values.devices = snapshot.val()
+      totalCount()
+    })
+   }, []);
+    
+  function totalCount(){
+
+    var larr = [], farr = [], carr = [];
+    var lcount = 0, fcount = 0, ccount = 0;
+
+    for (var i in values.devices.Lights) { larr.push(values.devices.Lights[i]) }
+    larr.forEach((item) => { if (item.power == 1){ lcount += 1 } })
+
+    for (var i in values.devices.Fans) { farr.push(values.devices.Fans[i]) }
+    farr.forEach((item) => { if (item.power == 1){ fcount += 1 } })
+
+    for (var i in values.devices.Curtains) { carr.push(values.devices.Curtains[i]) }
+    carr.forEach((item) => { if (item.power == 1){ ccount += 1 } })
+    
+    setValues({ ...values, 
+      totalLights: Object.keys(values.devices.Lights).length, 
+      totalFans: Object.keys(values.devices.Fans).length, 
+      totalCurtains: Object.keys(values.devices.Curtains).length, 
+      lightsOn: lcount,
+      fansOn: fcount,
+      curtainsOn: ccount
+    });
+
+  }
+
   return (
     <div>
       <GridContainer>
@@ -69,11 +105,11 @@ export default function Dashboard() {
                 <WbIncandescentOutlinedIcon/>
               </CardIcon>
               <p className={classes.cardCategory}>Lights On</p>
-              <h3 className={classes.cardTitle}>2</h3>
+              <h3 className={classes.cardTitle}>{values.lightsOn}</h3>
             </CardHeader>
             <CardFooter stats>
               <div className={classes.stats}>
-                Out of 4
+                 Out of {values.totalLights} 
               </div>
             </CardFooter>
           </Card>
@@ -85,11 +121,11 @@ export default function Dashboard() {
                 <ToysOutlinedIcon />
               </CardIcon>
               <p className={classes.cardCategory}>Fans On</p>
-              <h3 className={classes.cardTitle}>1</h3>
+              <h3 className={classes.cardTitle}>{values.fansOn}</h3>
             </CardHeader>
             <CardFooter stats>
               <div className={classes.stats}>
-                Out of 2
+                Out of {values.totalFans}
               </div>
             </CardFooter>
           </Card>
@@ -101,11 +137,11 @@ export default function Dashboard() {
                 <ReceiptOutlinedIcon />
               </CardIcon>
               <p className={classes.cardCategory}>Curtains Open</p>
-              <h3 className={classes.cardTitle}>3</h3>
+              <h3 className={classes.cardTitle}>{values.curtainsOn}</h3>
             </CardHeader>
             <CardFooter stats>
               <div className={classes.stats}>
-                Out of 5
+                Out of {values.totalCurtains}
               </div>
             </CardFooter>
           </Card>
@@ -182,7 +218,7 @@ export default function Dashboard() {
           </Card>
         </GridItem>
       </GridContainer>
-      <GridContainer>
+      {/* <GridContainer>
         <GridItem xs={12} sm={12} md={6}>
           <CustomTabs
             title="Tasks:"
@@ -246,7 +282,7 @@ export default function Dashboard() {
             </CardBody>
           </Card>
         </GridItem>
-      </GridContainer>
+      </GridContainer> */}
     </div>
   );
 }

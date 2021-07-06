@@ -1,63 +1,35 @@
-import React from "react";
-// @material-ui/core components
-import { makeStyles } from "@material-ui/core/styles";
+import React, {useEffect} from "react";
+import firebase from "firebase";
 // core components
 import GridItem from "components/Grid/GridItem.js";
 import GridContainer from "components/Grid/GridContainer.js";
 import Card from "components/Card/Card.js";
-import CardHeader from "components/Card/CardHeader.js";
 import CardBody from "components/Card/CardBody.js";
 import LightCard from "./lightCard.js"
 import { Button } from "@material-ui/core";
 import Customdrawer from 'components/CustomDrawer/Customdrawer';
 import AddLight from './addLight';
 
-const styles = {
-  cardCategoryWhite: {
-    "&,& a,& a:hover,& a:focus": {
-      color: "rgba(255,255,255,.62)",
-      margin: "0",
-      fontSize: "14px",
-      marginTop: "0",
-      marginBottom: "0",
-    },
-    "& a,& a:hover,& a:focus": {
-      color: "#FFFFFF",
-    },
-  },
-  root: {
-    '& .MuiDrawer-paperAnchorRight': {
-      width: '40%',
-    },
-  },
-  cardTitleWhite: {
-    color: "#FFFFFF",
-    marginTop: "0px",
-    minHeight: "auto",
-    fontWeight: "300",
-    fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
-    marginBottom: "3px",
-    textDecoration: "none",
-    "& small": {
-      color: "#777",
-      fontSize: "65%",
-      fontWeight: "400",
-      lineHeight: "1",
-    },
-  },
-};
-
-const useStyles = makeStyles(styles);
-
 export default function Lights() {
-  const classes = useStyles();
-
-  const lightList = ["1", "2", "3", "4"]
 
   const [state, setState] = React.useState({
     openDrawer: false,
+    devices : []
   })
 
+  const db = firebase.database().ref();
+
+  useEffect(()=> {
+    const devicesRef = firebase.database().ref('Devices');
+    devicesRef.on('value', (snapshot) => {
+      renderlights(snapshot.val())
+    })
+   }, []);
+
+  function renderlights(data){
+    setState({ ...state, devices: Object.entries(data.Lights)});
+  }
+  
   function showDrawer() {
     setState({ ...state, openDrawer: true })
     return toggleDrawer
@@ -76,13 +48,13 @@ export default function Lights() {
   return (
     <GridContainer>
       <GridItem xs={12} sm={12} md={12}>
-        <Card>
+         <Card>
           <CardBody>
             <GridContainer xs={12} sm={12} md={12} justify="flex-end">
               <Button color="primary" variant='contained' style={{ margin: 10, backgroundColor: '#6e7c7c' }} onClick={showDrawer}>Add Light</Button>
             </GridContainer>
             <GridContainer>
-              {lightList.map(num => <LightCard id={num} />)}
+              {state.devices.map((key) => <LightCard id={key[0]} value={key[1].power} db = {db}/>)}
             </GridContainer>
             <Customdrawer toggleDrawer={toggleDrawer} openDrawer={state.openDrawer}>
               <div style={{direction:'column', justify:'space-between'}}>
@@ -101,8 +73,8 @@ export default function Lights() {
                 </div>
               </div>
             </Customdrawer>
-          </CardBody>
-        </Card>
+           </CardBody>
+        </Card> 
       </GridItem>
     </GridContainer>
   );

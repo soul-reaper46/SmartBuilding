@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import firebase from "firebase";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
@@ -48,7 +48,8 @@ const useStyles = makeStyles(styles);
 export default function FanCard(props) {
 
   const [values, setValues] = React.useState({
-    On: false
+    On: false,
+    switch: false
   });
 
   const [state, setState] = React.useState({
@@ -74,28 +75,46 @@ export default function FanCard(props) {
 
   const [checked, setChecked] = React.useState(false);
 
-  const toggleChecked = () => {
-    setChecked((prev) => !prev);
-    setValues({ ...values, On: !values.On });
-  };
-
   function pushData(id) {
-    if (!values.On){
-      firebase.database().ref('Fans/Fan' + id).set({
+    if (!checked){
+      firebase.database().ref('Devices/Fans/' + id).update({
         power: 0,
       });
-   } else if (values.On) {
-    firebase.database().ref('Fans/Fan' + id).set({
+   } else if (checked) {
+    firebase.database().ref('Devices/Fans/' + id).update({
       power: 1,
     });
    }
  }
 
+ useEffect(()=> {
+  const devicesRef = firebase.database().ref('Devices/Fans/' + props.id);
+  firebase.database().ref('Devices/Fans/' + props.id).set({power: props.value}) //this line ensures db data  does not get overwritten when on page refresh.
+  devicesRef.on('value', (snapshot) => {
+    switchval(Object.entries(snapshot.val()))
+  })
+ }, []);
+
+function switchval(data){
+  console.log(data[0][1]);
+   if (data[0][1] == 1){
+    setChecked(true);
+   } else if (data[0][1] == 0){
+    setChecked(false);
+   }
+  
+}
+
+ const toggleChecked = () => {
+  setChecked((prev) => !prev);
+  setValues({ ...values, On: !values.On });
+};
+
   return (
     <GridItem xs={12} sm={4} md={4}>
       <Card>
         <CardHeader color="primary">
-          <h5 className={classes.cardTitleWhite}>Fan{props.id}</h5>
+          <h5 className={classes.cardTitleWhite}>{props.id}</h5>
         </CardHeader>
         <CardBody>
           <GridItem>

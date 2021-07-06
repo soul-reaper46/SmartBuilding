@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import firebase from "firebase";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
@@ -14,18 +14,7 @@ import EditLight from './editLight';
 import Customdrawer from 'components/CustomDrawer/Customdrawer';
 
 const styles = {
-  cardCategoryWhite: {
-    "&,& a,& a:hover,& a:focus": {
-      color: "rgba(255,255,255,.62)",
-      margin: "0",
-      fontSize: "14px",
-      marginTop: "0",
-      marginBottom: "0",
-    },
-    "& a,& a:hover,& a:focus": {
-      color: "#FFFFFF",
-    },
-  },
+  
   cardTitleWhite: {
     color: "#FFFFFF",
     marginTop: "0px",
@@ -48,7 +37,8 @@ const useStyles = makeStyles(styles);
 export default function LightCard(props) {
 
    const [values, setValues] = React.useState({
-     On: false
+     On: false,
+     switch: false
    });
 
    const [state, setState] = React.useState({
@@ -74,34 +64,53 @@ export default function LightCard(props) {
 
   const [checked, setChecked] = React.useState(false);
 
-   function pushData(id) {
-      if (!values.On){
-        firebase.database().ref('Lights/Light' + id).set({
-          power: 0,
-        });
-     } else if (values.On) {
-      firebase.database().ref('Lights/Light' + id).set({
-        power: 1,
-      });
-     } 
-   }
+  function pushData(id) {
+     if (!checked){
+       firebase.database().ref().child('Devices/Lights/' + id).update({
+         power: 0,
+       });
+    } else if (checked) {
+     firebase.database().ref().child('Devices/Lights/' + id).update({
+       power: 1,
+     });
+    } 
+  }
 
-  function toggleChecked(id) {
+  useEffect(()=> {
+    const devicesRef = firebase.database().ref('Devices/Lights/' + props.id);
+    firebase.database().ref('Devices/Lights/' + props.id).set({power: props.value}) //this line ensures db data  does not get overwritten when on page refresh.
+    devicesRef.on('value', (snapshot) => {
+      switchval(Object.entries(snapshot.val()))
+    })
+   }, []);
+
+  function switchval(data){
+    console.log(data[0][1]);
+     if (data[0][1] == 1){
+      setChecked(true);
+     } else if (data[0][1] == 0){
+      setChecked(false);
+     }
+    
+  } 
+  
+  function toggleChecked() {
     setChecked((prev) => !prev);
     setValues({ ...values, On: !values.On });  
   };
 
+  
   return (
     <GridItem xs={12} sm={4} md={4}>
       <Card>
         <CardHeader color="primary">
-          <h5 className={classes.cardTitleWhite}>Light{props.id}</h5>
+          <h5 className={classes.cardTitleWhite}>{props.id}</h5>
         </CardHeader>
         <CardBody>
           <GridItem>
             <p style={{ fontWeight:'500' }}>Power : <Switch checked={checked} onChange={toggleChecked} onClick={pushData(props.id)}/></p>
           </GridItem>
-
+    
           <GridContainer xs={12} sm={12} md={12} justify="flex-end">
             <Button color="primary" variant='contained' style={{ margin: 10, backgroundColor: '#87a7b3' }} onClick={showDrawer}>Edit</Button>
             <Button color="primary" variant='contained' style={{ margin: 10, backgroundColor: '#ce1212' }}>Remove</Button>
