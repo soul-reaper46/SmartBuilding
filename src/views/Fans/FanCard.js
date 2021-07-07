@@ -148,7 +148,7 @@ function switchval(data){
                   </Button>
                 </div>
                 <div style={{ marginTop:'80px', marginRight:'10px'}}>
-                <EditFan />
+                <EditFan id={props.id}/>
                 </div>
               </div>
             </Customdrawer>

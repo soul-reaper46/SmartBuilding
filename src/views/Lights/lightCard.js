@@ -139,7 +139,7 @@ export default function LightCard(props) {
                   </Button>
                 </div>
                 <div style={{ marginTop:'80px', marginRight:'10px'}}>
-                <EditLight />
+                <EditLight id={props.id}/>
                 </div>
               </div>
             </Customdrawer>
