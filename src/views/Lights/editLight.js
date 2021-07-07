@@ -51,7 +51,8 @@ export default function EditLight(props) {
     id: props.id,
     devices: [],
     iderr: false,
-    powerr: false
+    powerr: false,
+    edited: false
   });
 
   const [state, setState] = React.useState({
@@ -65,6 +66,7 @@ export default function EditLight(props) {
   function handleSubmit(e){
     e.preventDefault()
     pushData(values.id)
+    setValues({...values, edited: true})
   }
 
   function pushData(id) {
@@ -80,6 +82,8 @@ export default function EditLight(props) {
       <div style={{display: 'flex', justifyContent:'center', alignItems: 'center'}}>
       <GridItem xs={12} sm={12} md={6}>
         <Card>
+        {!values.edited ? 
+          <div>
           <CardHeader color="primary">
             <h5 className={classes.cardTitleWhite}>EDIT {props.id}</h5>
           </CardHeader>
@@ -108,6 +112,14 @@ export default function EditLight(props) {
               </GridContainer>
             </form>
           </CardBody>
+          </div>
+          : 
+          <Card>
+          <CardHeader color="primary">
+            <h5 className={classes.cardTitleWhite}>Successfully Edited! click close above.</h5>
+          </CardHeader>
+          </Card>
+          }
         </Card>
       </GridItem>
       </div>
