@@ -76,11 +76,22 @@ export default function LightCard(props) {
     } 
   }
 
+  function handleRemove(e){
+    e.preventDefault()
+    deleteData(props.id)
+  }
+
+  function deleteData(id) {
+    firebase.database().ref().child('Devices/Lights/' + id).remove();
+ }
+
   useEffect(()=> {
     const devicesRef = firebase.database().ref('Devices/Lights/' + props.id);
     firebase.database().ref('Devices/Lights/' + props.id).set({power: props.value}) //this line ensures db data  does not get overwritten when on page refresh.
     devicesRef.on('value', (snapshot) => {
-      switchval(Object.entries(snapshot.val()))
+      if(snapshot.val()){
+        switchval(Object.entries(snapshot.val()))
+      } 
     })
    }, []);
 
@@ -113,7 +124,7 @@ export default function LightCard(props) {
     
           <GridContainer xs={12} sm={12} md={12} justify="flex-end">
             <Button color="primary" variant='contained' style={{ margin: 10, backgroundColor: '#87a7b3' }} onClick={showDrawer}>Edit</Button>
-            <Button color="primary" variant='contained' style={{ margin: 10, backgroundColor: '#ce1212' }}>Remove</Button>
+            <Button type='submit' color="primary" variant='contained' style={{ margin: 10, backgroundColor: '#ce1212' }} onClick={handleRemove}>Remove</Button>
           </GridContainer>
           <Customdrawer toggleDrawer={toggleDrawer} openDrawer={state.openDrawer}>
               <div style={{direction:'column', justify:'space-between'}}>

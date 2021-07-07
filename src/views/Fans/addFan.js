@@ -1,7 +1,8 @@
 import React,{useState} from "react";
+import firebase from "firebase";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
-import Switch from '@material-ui/core/Switch';
+import {TextField} from '@material-ui/core';
 // core components
 import GridItem from "components/Grid/GridItem.js";
 import GridContainer from "components/Grid/GridContainer.js";
@@ -46,11 +47,33 @@ export default function AddFan() {
 
   const classes = useStyles();
 
-  const [checked, setChecked] = React.useState(false);
+  const [values, setValues] = React.useState({
+    id: null,
+    devices: [],
+    iderr: false,
+    powerr: false
+  });
 
-  const toggleChecked = () => {
-    setChecked((prev) => !prev);
+  const [state, setState] = React.useState({
+    submit: false
+  })
+
+  const handleChange = (prop) => (event) => {
+    setValues({ ...values, [prop]: event.target.value });   /*this function handles values when user types in textfield*/
   };
+
+  function handleSubmit(e){
+    e.preventDefault()
+    pushData(values.id)
+  }
+
+  function pushData(id) {
+    if (id != null) {
+        firebase.database().ref('Devices/Fans/Fan' + id).set({
+          power: 0,
+        });
+    }
+  }
 
   return ( 
       <div style={{display: 'flex', justifyContent:'center', alignItems: 'center'}}>
@@ -60,12 +83,29 @@ export default function AddFan() {
             <h5 className={classes.cardTitleWhite}>ADD NEW FAN</h5>
           </CardHeader>
           <CardBody>
-          <GridItem>
-            <p style={{ fontWeight:'500' }}>Power : <Switch checked={checked} onChange={toggleChecked} /></p>
-          </GridItem>
-            <GridContainer xs={12} sm={12} md={12} justify="flex-end">
-              <Button color="primary" variant='contained' style={{ margin: 10, backgroundColor:'#87a7b3' }}>Edit</Button>
-            </GridContainer>
+          <form>
+              <GridContainer justify="center">
+              <GridItem>
+              <TextField required
+                    id='id'
+                    label="Fan ID"
+                    type='text'
+                    variant="outlined"                                               /*code for id field*/
+                    value={values.id}
+                    onChange={handleChange('id')}
+                    error={values.id === "" || values.iderr}
+                    helperText={values.iderr ? 'id already exists!' : null}
+                    style={{ margin: 10 }}
+                  />
+            </GridItem>
+            <GridItem>
+                  *default power value will be 0.
+                </GridItem>
+              <GridContainer xs={12} sm={12} md={12} justify="flex-end">
+              <Button type='submit' color="primary" variant='contained' style={{ margin: 10, backgroundColor: '#423F3E' }} onClick={handleSubmit}>Submit</Button>
+              </GridContainer>
+              </GridContainer>
+            </form>
           </CardBody>
         </Card>
       </GridItem>
