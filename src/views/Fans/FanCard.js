@@ -3,6 +3,7 @@ import firebase from "firebase";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 import Switch from '@material-ui/core/Switch';
+import Slider from '@material-ui/core/Slider';
 // core components
 import GridItem from "components/Grid/GridItem.js";
 import GridContainer from "components/Grid/GridContainer.js";
@@ -14,18 +15,6 @@ import EditFan from './editFan';
 import Customdrawer from 'components/CustomDrawer/Customdrawer';
 
 const styles = {
-  cardCategoryWhite: {
-    "&,& a,& a:hover,& a:focus": {
-      color: "rgba(255,255,255,.62)",
-      margin: "0",
-      fontSize: "14px",
-      marginTop: "0",
-      marginBottom: "0",
-    },
-    "& a,& a:hover,& a:focus": {
-      color: "#FFFFFF",
-    },
-  },
   cardTitleWhite: {
     color: "#FFFFFF",
     marginTop: "0px",
@@ -49,7 +38,8 @@ export default function FanCard(props) {
 
   const [values, setValues] = React.useState({
     On: false,
-    switch: false
+    switch: false,
+    speed: 0
   });
 
   const [state, setState] = React.useState({
@@ -98,7 +88,7 @@ function deleteData(id) {
 
  useEffect(()=> {
   const devicesRef = firebase.database().ref('Devices/Fans/' + props.id);
-  firebase.database().ref('Devices/Fans/' + props.id).set({power: props.value}) //this line ensures db data  does not get overwritten when on page refresh.
+  firebase.database().ref('Devices/Fans/' + props.id).set({power: props.value, speed: props.speed}) //this line ensures db data  does not get overwritten when on page refresh.
   devicesRef.on('value', (snapshot) => {
     if(snapshot.val()){
       switchval(Object.entries(snapshot.val()))
@@ -107,14 +97,54 @@ function deleteData(id) {
  }, []);
 
 function switchval(data){
-  console.log(data[0][1]);
+  //console.log(data[1][1]);
    if (data[0][1] == 1){
     setChecked(true);
    } else if (data[0][1] == 0){
     setChecked(false);
    }
-  
+   setValues({...values, speed: data[1][1]})
 }
+
+const marks = [
+  {
+    value: 0,
+    label: '0',
+  },
+  {
+    value: 1,
+    label: '1',
+  },
+  {
+    value: 2,
+    label: '2',
+  },
+  {
+    value: 3,
+    label: '3',
+  },
+  {
+    value: 4,
+    label: '4',
+  },
+  {
+    value: 5,
+    label: '5',
+  },
+];
+
+function valuetext(value) {
+  return `${value}`;
+}
+
+const handleChange = (event, newValue) => {
+  event.preventDefault()
+  //console.log(newValue);
+  setValues({...values, speed: newValue});
+  firebase.database().ref('Devices/Fans/' + props.id).update({
+    speed: newValue,
+  });
+};
 
  const toggleChecked = () => {
   setChecked((prev) => !prev);
@@ -130,6 +160,21 @@ function switchval(data){
         <CardBody>
           <GridItem>
             <p style={{ fontWeight:'500' }}>Power : <Switch checked={checked} onChange={toggleChecked}  onClick={pushData(props.id)}/></p>
+          </GridItem>
+          <GridItem>
+          <p style={{ fontWeight:'500' }}>Fan Speed : </p>
+          <Slider
+            value={values.speed} 
+            onChange={handleChange}
+            defaultValue={values.speed}
+            getAriaValueText={valuetext}
+            aria-labelledby="discrete-slider"
+            valueLabelDisplay="auto"
+            step={1}
+            marks={marks}
+            min={0}
+            max={5}
+          />
           </GridItem>
           <GridContainer xs={12} sm={12} md={12} justify="flex-end">
             <Button color="primary" variant='contained' style={{ margin: 10, backgroundColor: '#87a7b3' }} onClick={showDrawer}>Edit</Button>

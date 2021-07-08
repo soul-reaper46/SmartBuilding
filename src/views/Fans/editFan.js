@@ -12,18 +12,6 @@ import CardBody from "components/Card/CardBody.js";
 import { Button } from "@material-ui/core";
 
 const styles = {
-  cardCategoryWhite: {
-    "&,& a,& a:hover,& a:focus": {
-      color: "rgba(255,255,255,.62)",
-      margin: "0",
-      fontSize: "14px",
-      marginTop: "0",
-      marginBottom: "0",
-    },
-    "& a,& a:hover,& a:focus": {
-      color: "#FFFFFF",
-    },
-  },
   cardTitleWhite: {
     color: "#FFFFFF",
     marginTop: "0px",
@@ -73,7 +61,7 @@ export default function EditFan(props) {
     if (id != null) {
       firebase.database().ref('Devices/Fans/'+props.id).remove();
       firebase.database().ref('Devices/Fans/'+id).set({
-        power: 0,
+        power: 0, speed: 0
       });
     }
   }
@@ -104,7 +92,7 @@ export default function EditFan(props) {
                   />
                 </GridItem>
                 <GridItem>
-                  *default power value will be 0.
+                  *default power and speed value will be 0.
                 </GridItem>
                 <GridContainer xs={12} sm={12} md={12} justify="flex-end">
                   <Button type='submit' color="primary" variant='contained' style={{ margin: 10, backgroundColor: '#423F3E' }} onClick={handleSubmit}>Submit</Button>

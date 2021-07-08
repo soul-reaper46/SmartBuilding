@@ -3,6 +3,7 @@ import firebase from "firebase";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 import Switch from '@material-ui/core/Switch';
+import Slider from '@material-ui/core/Slider';
 // core components
 import GridItem from "components/Grid/GridItem.js";
 import GridContainer from "components/Grid/GridContainer.js";
@@ -14,18 +15,6 @@ import EditCurtain from './editCurtain';
 import Customdrawer from 'components/CustomDrawer/Customdrawer';
 
 const styles = {
-  cardCategoryWhite: {
-    "&,& a,& a:hover,& a:focus": {
-      color: "rgba(255,255,255,.62)",
-      margin: "0",
-      fontSize: "14px",
-      marginTop: "0",
-      marginBottom: "0",
-    },
-    "& a,& a:hover,& a:focus": {
-      color: "#FFFFFF",
-    },
-  },
   cardTitleWhite: {
     color: "#FFFFFF",
     marginTop: "0px",
@@ -51,7 +40,8 @@ export default function CurtainCard(props) {
 
   const [values, setValues] = React.useState({
     On: false,
-    switch: false
+    switch: false,
+    openpos: 0
   });
 
   const [checked, setChecked] = React.useState(false);
@@ -76,12 +66,12 @@ export default function CurtainCard(props) {
   };
 
   function pushData(id) {
-    if (!checked){
-      firebase.database().ref('Devices/Curtains/' + id).set({
+    if (checked == false){
+      firebase.database().ref('Devices/Curtains/' + id).update({
         power: 0,
       });
-   } else if (checked) {
-    firebase.database().ref('Devices/Curtains/' + id).set({
+   } else if (checked  == true) {
+    firebase.database().ref('Devices/Curtains/' + id).update({
       power: 1,
     });
    } 
@@ -98,7 +88,7 @@ function deleteData(id) {
 
  useEffect(()=> {
   const devicesRef = firebase.database().ref('Devices/Curtains/' + props.id);
-  firebase.database().ref('Devices/Curtains/' + props.id).set({power: props.value}) //this line ensures db data  does not get overwritten when on page refresh.
+  firebase.database().ref('Devices/Curtains/' + props.id).set({power: props.value, openpos: props.pos}) //this line ensures db data  does not get overwritten when on page refresh.
   devicesRef.on('value', (snapshot) => {
     if(snapshot.val()){
       switchval(Object.entries(snapshot.val()))
@@ -107,14 +97,42 @@ function deleteData(id) {
  }, []);
 
 function switchval(data){
-  console.log(data[0][1]);
-   if (data[0][1] == 1){
+  //console.log(data[1][1]);
+   if (data[1][1] == 1){
     setChecked(true);
-   } else if (data[0][1] == 0){
+   } else if (data[1][1] == 0){
     setChecked(false);
    }
-  
+   setValues({...values, openpos: data[0][1]})
 }
+
+const marks = [
+  {
+    value: 0,
+    label: 'Close',
+  },
+  {
+    value: 1,
+    label: 'Half open',
+  },
+  {
+    value: 2,
+    label: 'Fully open',
+  },
+];
+
+function valuetext(value) {
+  return `${value}`;
+}
+
+const handleChange = (event, newValue) => {
+  event.preventDefault()
+  //console.log(newValue);
+  setValues({...values, openpos: newValue});
+  firebase.database().ref('Devices/Curtains/' + props.id).update({
+    openpos: newValue,
+  });
+};
 
   function toggleChecked() {
     setChecked((prev) => !prev);
@@ -130,6 +148,21 @@ function switchval(data){
           <CardBody>
           <GridItem>
             <p style={{ fontWeight:'500' }}>Power : <Switch checked={checked} onChange={toggleChecked} onClick={pushData(props.id)}/></p>
+          </GridItem>
+          <GridItem>
+          <p style={{ fontWeight:'500' }}>Curtain Position : </p>
+          <Slider
+            value={values.openpos} 
+            onChange={handleChange}
+            defaultValue={values.openpos}
+            getAriaValueText={valuetext}
+            aria-labelledby="discrete-slider"
+            valueLabelDisplay="auto"
+            step={1}
+            marks={marks}
+            min={0}
+            max={2}
+          />
           </GridItem>
             <GridContainer xs={12} sm={12} md={12} justify="flex-end">
               <Button color="primary" variant='contained' style={{ margin: 10, backgroundColor:'#87a7b3' }} onClick={showDrawer}>Edit</Button>

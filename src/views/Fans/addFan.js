@@ -12,18 +12,6 @@ import CardBody from "components/Card/CardBody.js";
 import { Button } from "@material-ui/core";
 
 const styles = {
-  cardCategoryWhite: {
-    "&,& a,& a:hover,& a:focus": {
-      color: "rgba(255,255,255,.62)",
-      margin: "0",
-      fontSize: "14px",
-      marginTop: "0",
-      marginBottom: "0",
-    },
-    "& a,& a:hover,& a:focus": {
-      color: "#FFFFFF",
-    },
-  },
   cardTitleWhite: {
     color: "#FFFFFF",
     marginTop: "0px",
@@ -70,7 +58,7 @@ export default function AddFan() {
   function pushData(id) {
     if (id != null) {
         firebase.database().ref('Devices/Fans/Fan' + id).set({
-          power: 0,
+          power: 0, speed: 0
         });
     }
   }

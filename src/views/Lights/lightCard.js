@@ -96,7 +96,7 @@ export default function LightCard(props) {
    }, []);
 
   function switchval(data){
-    console.log(data[0][1]);
+    //console.log(data[0][1]);
      if (data[0][1] == 1){
       setChecked(true);
      } else if (data[0][1] == 0){

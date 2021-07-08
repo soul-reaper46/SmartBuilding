@@ -52,7 +52,7 @@ export default function WindowCurtains() {
               <Button color="primary" variant='contained' style={{ margin: 10, backgroundColor:'#6e7c7c' }}  onClick={showDrawer}>Add Curtain</Button>
             </GridContainer>
             <GridContainer>
-              {state.cdevices.map((key) => <CurtainCard id = {key[0]} value={key[1].power}/> )}
+              {state.cdevices.map((key) => <CurtainCard id = {key[0]} value={key[1].power} pos={key[1].openpos}/> )}
             </GridContainer>
             <Customdrawer toggleDrawer={toggleDrawer} openDrawer={state.openDrawer}>
               <div style={{direction:'column', justify:'space-between'}}>
