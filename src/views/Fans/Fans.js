@@ -52,7 +52,7 @@ export default function Fans() {
               <Button color="primary" variant='contained' style={{ margin: 10, backgroundColor:'#6e7c7c' }} onClick={showDrawer}>Add Fan</Button>
             </GridContainer>
             <GridContainer>
-              {state.fdevices.map((key) => <FanCard id = {key[0]} value={key[1].power} speed={key[1].speed}/> )}
+              {state.fdevices.map((key) => <FanCard id = {key[0]} value={key[1].power} speed={key[1].speed} speedMax={key[1].speedMax}/> )}
             </GridContainer>
             <Customdrawer toggleDrawer={toggleDrawer} openDrawer={state.openDrawer}>
               <div style={{direction:'column', justify:'space-between'}}>

@@ -39,7 +39,8 @@ export default function FanCard(props) {
   const [values, setValues] = React.useState({
     On: false,
     switch: false,
-    speed: 0
+    speed: 0,
+    speedMax: 5
   });
 
   const [state, setState] = React.useState({
@@ -66,11 +67,11 @@ export default function FanCard(props) {
   const [checked, setChecked] = React.useState(false);
 
   function pushData(id) {
-    if (!checked){
+    if (props.value == 1){
       firebase.database().ref('Devices/Fans/' + id).update({
         power: 0,
       });
-   } else if (checked) {
+   } else if (props.value == 0) {
     firebase.database().ref('Devices/Fans/' + id).update({
       power: 1,
     });
@@ -88,7 +89,7 @@ function deleteData(id) {
 
  useEffect(()=> {
   const devicesRef = firebase.database().ref('Devices/Fans/' + props.id);
-  firebase.database().ref('Devices/Fans/' + props.id).set({power: props.value, speed: props.speed}) //this line ensures db data  does not get overwritten when on page refresh.
+  //firebase.database().ref('Devices/Fans/' + props.id).set({power: props.value, speed: props.speed, speedMax: props.speedMax}) //this line ensures db data  does not get overwritten when on page refresh.
   devicesRef.on('value', (snapshot) => {
     if(snapshot.val()){
       switchval(Object.entries(snapshot.val()))
@@ -103,7 +104,10 @@ function switchval(data){
    } else if (data[0][1] == 0){
     setChecked(false);
    }
-   setValues({...values, speed: data[1][1]})
+   setValues({...values, speed: data[1][1], speedMax: data[2][1]})
+  //  marks.push({value: data[2][1], label: data[2][1]})
+  //  console.log(marks);
+   
 }
 
 const marks = [
@@ -148,7 +152,8 @@ const handleChange = (event, newValue) => {
 
  const toggleChecked = () => {
   setChecked((prev) => !prev);
-  setValues({ ...values, On: !values.On });
+  //setValues({ ...values, On: !values.On });
+  pushData(props.id)
 };
 
   return (
@@ -159,7 +164,7 @@ const handleChange = (event, newValue) => {
         </CardHeader>
         <CardBody>
           <GridItem>
-            <p style={{ fontWeight:'500' }}>Power : <Switch checked={checked} onChange={toggleChecked}  onClick={pushData(props.id)}/></p>
+            <p style={{ fontWeight:'500' }}>Power : <Switch checked={checked} onChange={toggleChecked}/></p>
           </GridItem>
           <GridItem>
           <p style={{ fontWeight:'500' }}>Fan Speed : </p>
@@ -173,7 +178,7 @@ const handleChange = (event, newValue) => {
             step={1}
             marks={marks}
             min={0}
-            max={5}
+            max={values.speedMax}
           />
           </GridItem>
           <GridContainer xs={12} sm={12} md={12} justify="flex-end">
@@ -193,7 +198,7 @@ const handleChange = (event, newValue) => {
                   </Button>
                 </div>
                 <div style={{ marginTop:'80px', marginRight:'10px'}}>
-                <EditFan id={props.id}/>
+                <EditFan id={props.id} speedMax={props.speedMax}/>
                 </div>
               </div>
             </Customdrawer>

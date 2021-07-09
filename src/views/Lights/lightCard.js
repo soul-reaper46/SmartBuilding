@@ -65,11 +65,11 @@ export default function LightCard(props) {
   const [checked, setChecked] = React.useState(false);
 
   function pushData(id) {
-     if (!checked){
+     if (props.value == 1){
        firebase.database().ref().child('Devices/Lights/' + id).update({
          power: 0,
        });
-    } else if (checked) {
+    } else if (props.value == 0) {
      firebase.database().ref().child('Devices/Lights/' + id).update({
        power: 1,
      });
@@ -87,7 +87,7 @@ export default function LightCard(props) {
 
   useEffect(()=> {
     const devicesRef = firebase.database().ref('Devices/Lights/' + props.id);
-    firebase.database().ref('Devices/Lights/' + props.id).set({power: props.value}) //this line ensures db data  does not get overwritten when on page refresh.
+    //firebase.database().ref('Devices/Lights/' + props.id).set({power: props.value}) //this line ensures db data  does not get overwritten when on page refresh.
     devicesRef.on('value', (snapshot) => {
       if(snapshot.val()){
         switchval(Object.entries(snapshot.val()))
@@ -107,7 +107,8 @@ export default function LightCard(props) {
   
   function toggleChecked() {
     setChecked((prev) => !prev);
-    setValues({ ...values, On: !values.On });  
+    //setValues({ ...values, On: !values.On });
+    pushData(props.id)  
   };
 
   
@@ -119,7 +120,7 @@ export default function LightCard(props) {
         </CardHeader>
         <CardBody>
           <GridItem>
-            <p style={{ fontWeight:'500' }}>Power : <Switch checked={checked} onChange={toggleChecked} onClick={pushData(props.id)}/></p>
+            <p style={{ fontWeight:'500' }}>Power : <Switch checked={checked} onChange={toggleChecked}/></p>
           </GridItem>
     
           <GridContainer xs={12} sm={12} md={12} justify="flex-end">

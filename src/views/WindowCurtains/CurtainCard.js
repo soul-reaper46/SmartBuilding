@@ -66,11 +66,11 @@ export default function CurtainCard(props) {
   };
 
   function pushData(id) {
-    if (checked == false){
+    if (props.value == 1){
       firebase.database().ref('Devices/Curtains/' + id).update({
         power: 0,
       });
-   } else if (checked  == true) {
+   } else if (props.value == 0) {
     firebase.database().ref('Devices/Curtains/' + id).update({
       power: 1,
     });
@@ -88,7 +88,7 @@ function deleteData(id) {
 
  useEffect(()=> {
   const devicesRef = firebase.database().ref('Devices/Curtains/' + props.id);
-  firebase.database().ref('Devices/Curtains/' + props.id).set({power: props.value, openpos: props.pos}) //this line ensures db data  does not get overwritten when on page refresh.
+  //firebase.database().ref('Devices/Curtains/' + props.id).set({power: props.value, openpos: props.pos}) //this line ensures db data  does not get overwritten when on page refresh.
   devicesRef.on('value', (snapshot) => {
     if(snapshot.val()){
       switchval(Object.entries(snapshot.val()))
@@ -136,7 +136,8 @@ const handleChange = (event, newValue) => {
 
   function toggleChecked() {
     setChecked((prev) => !prev);
-    setValues({ ...values, On: !values.On });  
+    //setValues({ ...values, On: !values.On });
+    pushData(props.id)  
   };
 
   return ( 
@@ -147,7 +148,7 @@ const handleChange = (event, newValue) => {
           </CardHeader>
           <CardBody>
           <GridItem>
-            <p style={{ fontWeight:'500' }}>Power : <Switch checked={checked} onChange={toggleChecked} onClick={pushData(props.id)}/></p>
+            <p style={{ fontWeight:'500' }}>Power : <Switch checked={checked} onChange={toggleChecked}/></p>
           </GridItem>
           <GridItem>
           <p style={{ fontWeight:'500' }}>Curtain Position : </p>

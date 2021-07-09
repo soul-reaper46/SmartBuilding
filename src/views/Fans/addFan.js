@@ -39,7 +39,8 @@ export default function AddFan() {
     id: null,
     devices: [],
     iderr: false,
-    powerr: false
+    powerr: false,
+    speedMax: null
   });
 
   const [state, setState] = React.useState({
@@ -58,7 +59,7 @@ export default function AddFan() {
   function pushData(id) {
     if (id != null) {
         firebase.database().ref('Devices/Fans/Fan' + id).set({
-          power: 0, speed: 0
+          power: 0, speed: 0, speedMax: parseInt(values.speedMax)
         });
     }
   }
@@ -88,7 +89,20 @@ export default function AddFan() {
             </GridItem>
             <GridItem>
                   *default power value will be 0.
-                </GridItem>
+            </GridItem>
+            <GridItem>
+              <TextField required
+                    id='speedMax'
+                    label="Fan Max Speed"
+                    type='number'
+                    variant="outlined"                                               /*code for id field*/
+                    value={values.speedMax}
+                    onChange={handleChange('speedMax')}
+                    error={values.id === "" || values.iderr}
+                    //helperText={values.iderr ? 'id already exists!' : null}
+                    style={{ margin: 10 }}
+                  />
+            </GridItem>
               <GridContainer xs={12} sm={12} md={12} justify="flex-end">
               <Button type='submit' color="primary" variant='contained' style={{ margin: 10, backgroundColor: '#423F3E' }} onClick={handleSubmit}>Submit</Button>
               </GridContainer>

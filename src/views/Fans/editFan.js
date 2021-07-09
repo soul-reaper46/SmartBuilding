@@ -37,6 +37,7 @@ export default function EditFan(props) {
 
   const [values, setValues] = React.useState({
     id: props.id,
+    speedMax: props.speedMax,
     devices: [],
     iderr: false,
     powerr: false,
@@ -61,7 +62,7 @@ export default function EditFan(props) {
     if (id != null) {
       firebase.database().ref('Devices/Fans/'+props.id).remove();
       firebase.database().ref('Devices/Fans/'+id).set({
-        power: 0, speed: 0
+        power: 0, speed: 0, speedMax : parseInt(values.speedMax)
       });
     }
   }
@@ -93,6 +94,19 @@ export default function EditFan(props) {
                 </GridItem>
                 <GridItem>
                   *default power and speed value will be 0.
+                </GridItem>
+                <GridItem>
+                  <TextField required
+                    id='speedmax'
+                    label="Fan Max Speed"
+                    type='number'
+                    variant="outlined"                                               /*code for max speed field*/
+                    value={values.speedMax}
+                    onChange={handleChange('speedMax')}
+                    error={values.id === "" || values.iderr}
+                    //helperText={values.iderr ? 'id already exists!' : null}
+                    style={{ margin: 10 }}
+                  />
                 </GridItem>
                 <GridContainer xs={12} sm={12} md={12} justify="flex-end">
                   <Button type='submit' color="primary" variant='contained' style={{ margin: 10, backgroundColor: '#423F3E' }} onClick={handleSubmit}>Submit</Button>
