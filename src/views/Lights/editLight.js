@@ -3,6 +3,7 @@ import firebase from "firebase";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 import {TextField} from '@material-ui/core';
+import Switch from '@material-ui/core/Switch';
 // core components
 import GridItem from "components/Grid/GridItem.js";
 import GridContainer from "components/Grid/GridContainer.js";
@@ -49,15 +50,22 @@ export default function EditLight(props) {
 
   const [values, setValues] = React.useState({
     id: props.id,
+    supportColor: props.supportColor,
+    supportIntensity: props.supportIntensity,
     devices: [],
     iderr: false,
     powerr: false,
     edited: false
   });
 
+  
+
   const [state, setState] = React.useState({
     submit: false
   })
+
+  const [checked, setChecked] = React.useState(false);
+  const [check, setCheck] = React.useState(false);
 
   const handleChange = (prop) => (event) => {
     setValues({ ...values, [prop]: event.target.value });   /*this function handles values when user types in textfield*/
@@ -73,10 +81,20 @@ export default function EditLight(props) {
     if (id != null) {
       firebase.database().ref('Devices/Lights/'+props.id).remove();
       firebase.database().ref('Devices/Lights/'+id).set({
-        power: 0,
+        power: 0, supportColor: values.supportColor, supportIntensity: values.supportIntensity, color: '#fff'
       });
     }
   }
+
+  function toggleChecked() {
+    setChecked((prev) => !prev);
+    setValues({ ...values, supportColor: !values.supportColor }); 
+  };
+
+  function toggleChecked1() {
+    setCheck((prev) => !prev);
+    setValues({ ...values, supportIntensity: !values.supportIntensity }); 
+  };
 
   return ( 
       <div style={{display: 'flex', justifyContent:'center', alignItems: 'center'}}>
@@ -103,8 +121,11 @@ export default function EditLight(props) {
                     style={{ margin: 10 }}
                   />
                 </GridItem>
+                {/* <GridItem>
+                  <p style={{ fontWeight:'500' }}>Supports Intensity ? <Switch checked={values.supportIntensity} onChange={toggleChecked1}/></p>
+                </GridItem> */}
                 <GridItem>
-                  *default power value will be 0.
+                  <p style={{ fontWeight:'500' }}>Supports Color ? <Switch checked={values.supportColor} onChange={toggleChecked}/></p>
                 </GridItem>
                 <GridContainer xs={12} sm={12} md={12} justify="flex-end">
                   <Button type='submit' color="primary" variant='contained' style={{ margin: 10, backgroundColor: '#423F3E' }} onClick={handleSubmit}>Submit</Button>

@@ -54,7 +54,7 @@ export default function Lights() {
               <Button color="primary" variant='contained' style={{ margin: 10, backgroundColor: '#6e7c7c' }} onClick={showDrawer}>Add Light</Button>
             </GridContainer>
             <GridContainer>
-              {state.devices.map((key) => <LightCard id={key[0]} value={key[1].power} db = {db}/>)}
+              {state.devices.map((key) => <LightCard id={key[0]} value={key[1].power} color={key[1].color} supportIntensity={key[1].supportIntensity} supportColor={key[1].supportColor}/>)}
             </GridContainer>
             <Customdrawer toggleDrawer={toggleDrawer} openDrawer={state.openDrawer}>
               <div style={{direction:'column', justify:'space-between'}}>

@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import firebase from "firebase";
+import  {HuePicker, AlphaPicker}  from 'react-color';
+import { HexColorInput } from "react-colorful";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 import { Button } from "@material-ui/core";
@@ -38,7 +40,10 @@ export default function LightCard(props) {
 
    const [values, setValues] = React.useState({
      On: false,
-     switch: false
+     switch: false,
+     supportIntensity: props.supportIntensity,
+     supportColor: props.supportColor,
+     Color: props.color
    });
 
    const [state, setState] = React.useState({
@@ -96,12 +101,13 @@ export default function LightCard(props) {
    }, []);
 
   function switchval(data){
-    //console.log(data[0][1]);
-     if (data[0][1] == 1){
+    console.log(data[0][1]);
+     if (data[1][1] == 1){
       setChecked(true);
-     } else if (data[0][1] == 0){
+     } else if (data[1][1] == 0){
       setChecked(false);
      }
+     setValues({...values, Color:data[0][1], supportColor: data[2][1], supportIntensity: data[3][1]})
     
   } 
   
@@ -111,6 +117,19 @@ export default function LightCard(props) {
     pushData(props.id)  
   };
 
+  const handleChangeComplete = (color) => {
+     setValues({...values, Color: color.hex });
+     console.log(color.hex);
+     firebase.database().ref().child('Devices/Lights/' + props.id).update({
+       color: color.hex,
+     });
+    
+  };
+
+  // const handleChange = (color) => {
+  //   setValues({...values, color: color.hex });
+  //   console.log(color.hex);
+  // };
   
   return (
     <GridItem xs={12} sm={4} md={4}>
@@ -122,6 +141,26 @@ export default function LightCard(props) {
           <GridItem>
             <p style={{ fontWeight:'500' }}>Power : <Switch checked={checked} onChange={toggleChecked}/></p>
           </GridItem>
+          {/* {(values.supportIntensity == true) ? 
+            <GridItem>
+              <p style={{ fontWeight:'500' }}>Intensity : </p>
+              <AlphaPicker
+                color={ values.Color }
+                //onChange={ handleChange }
+                onChangeComplete={ handleChangeComplete }
+              />
+            </GridItem>
+          : null} */}
+          {(values.supportColor == true) ? 
+            <GridItem>
+              <p style={{ fontWeight:'500' }}>Color :  </p>
+               <HuePicker 
+                color={ values.Color }
+                onChangeComplete={ handleChangeComplete }
+              /> 
+              {/* <HexColorInput color={values.Color} onChange={handleChangeComplete} /> */}
+            </GridItem>
+          : null}
     
           <GridContainer xs={12} sm={12} md={12} justify="flex-end">
             <Button color="primary" variant='contained' style={{ margin: 10, backgroundColor: '#87a7b3' }} onClick={showDrawer}>Edit</Button>
@@ -140,7 +179,7 @@ export default function LightCard(props) {
                   </Button>
                 </div>
                 <div style={{ marginTop:'80px', marginRight:'10px'}}>
-                <EditLight id={props.id}/>
+                <EditLight id={props.id} supportColor={values.supportColor} supportIntensity={values.supportIntensity}/>
                 </div>
               </div>
             </Customdrawer>
